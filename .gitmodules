@@ -1,0 +1,3 @@
+[submodule "proto"]
+	path = proto
+	url = git@github.com:jyotirmoy-paul/nsu_calculator_proto.git
