@@ -1,4 +1,5 @@
 PROTO_DIR = proto
+BIN_DIR = bin
 
 ifeq ($(OS), Windows_NT)
 	SHELL := powershell.exe
@@ -33,17 +34,24 @@ else
 	CLIENT_BIN = ${CLIENT_DIR}
 endif
 
-
 .DEFAULT_GOAL := help
 
 generate: ## Generates all proto files
 	protoc -I${PROTO_DIR} --go_opt=module=${PACKAGE} --go_out=. --go-grpc_opt=module=${PACKAGE} --go-grpc_out=. ${PROTO_DIR}/*.proto
 
-run: ## run the server
+run: ## Run the server
 	go run server/main.go
+
+build: ## Build a binary for the server
+	protoc -I${PROTO_DIR} --go_opt=module=${PACKAGE} --go_out=. --go-grpc_opt=module=${PACKAGE} --go-grpc_out=. ${PROTO_DIR}/*.proto
+	go build -o ${BIN_DIR}/server server/main.go
 
 clean: ## Clean the generates .go files
 	${RM_F_CMD} ${PROTO_DIR}/*.pb.go
+	${RM_RF_CMD} ${BIN_DIR}
+
+demo: ## Quickly check the GRPC implementations without a client
+	evans --host localhost --port 30031 --reflection repl
 
 help: ## Show this help
 	@${HELP_CMD}
