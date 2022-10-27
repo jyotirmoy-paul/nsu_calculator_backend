@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"log"
+	"math"
 
 	pb "github.com/jyotirmoy-paul/nsu_calculator_backend/proto"
 	"google.golang.org/grpc/codes"
@@ -96,5 +97,29 @@ func (s *Server) FindAverage(stream pb.CalculatorService_FindAverageServer) erro
 }
 
 func (s *Server) FindMax(stream pb.CalculatorService_FindMaxServer) error {
-	return nil
+	var max float64 = -math.MaxFloat64
+
+	for {
+		msg, err := stream.Recv()
+		if err == io.EOF {
+			return nil
+		}
+
+		if err != nil {
+			log.Printf("Error in FindMax stream: %v\n", err)
+			return status.Errorf(
+				codes.Unknown,
+				"Something went wrong",
+			)
+		}
+
+		// update our max if there is a new maximum number found
+		if max < msg.Number {
+			max = msg.Number
+		}
+
+		stream.Send(&pb.MaxResponse{
+			Number: max,
+		})
+	}
 }
