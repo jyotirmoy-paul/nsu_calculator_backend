@@ -43,7 +43,7 @@ func (s *Server) Operate(ctx context.Context, in *pb.OperationRequest) (*pb.Oper
 }
 
 func (s *Server) Factorize(in *pb.FactorizationRequest, stream pb.CalculatorService_FactorizeServer) error {
-	var k int64 = 2
+	var k int32 = 2
 	N := in.Number
 
 	for N > 1 {
