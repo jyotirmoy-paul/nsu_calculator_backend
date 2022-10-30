@@ -40,11 +40,11 @@ generate: ## Generates all proto files
 	protoc -I${PROTO_DIR} --go_opt=module=${PACKAGE} --go_out=. --go-grpc_opt=module=${PACKAGE} --go-grpc_out=. ${PROTO_DIR}/*.proto
 
 run: ## Run the server
-	go run server/main.go
+	go run server/main.go server/calculator.go
 
 build: ## Build a binary for the server
 	protoc -I${PROTO_DIR} --go_opt=module=${PACKAGE} --go_out=. --go-grpc_opt=module=${PACKAGE} --go-grpc_out=. ${PROTO_DIR}/*.proto
-	go build -o ${BIN_DIR}/server server/main.go
+	go build -o ${BIN_DIR}/server server/main.go server/calculator.go
 
 clean: ## Clean the generates .go files
 	${RM_F_CMD} ${PROTO_DIR}/*.pb.go

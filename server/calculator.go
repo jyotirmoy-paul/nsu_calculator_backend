@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"io"
 	"log"
-	"math"
 
 	pb "github.com/jyotirmoy-paul/nsu_calculator_backend/proto"
 	"google.golang.org/grpc/codes"
@@ -96,8 +95,8 @@ func (s *Server) FindAverage(stream pb.CalculatorService_FindAverageServer) erro
 	}
 }
 
-func (s *Server) FindMax(stream pb.CalculatorService_FindMaxServer) error {
-	var max float64 = -math.MaxFloat64
+func (s *Server) Sum(stream pb.CalculatorService_SumServer) error {
+	var sum float64
 
 	for {
 		msg, err := stream.Recv()
@@ -113,13 +112,10 @@ func (s *Server) FindMax(stream pb.CalculatorService_FindMaxServer) error {
 			)
 		}
 
-		// update our max if there is a new maximum number found
-		if max < msg.Number {
-			max = msg.Number
-		}
+		sum += msg.Number
 
-		stream.Send(&pb.MaxResponse{
-			Number: max,
+		stream.Send(&pb.SumResponse{
+			Number: sum,
 		})
 	}
 }
